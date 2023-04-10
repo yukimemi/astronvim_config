@@ -20,6 +20,7 @@ return {
     "jay-babu/mason-nvim-dap.nvim",
     -- overrides `require("mason-nvim-dap").setup(...)`
     opts = {
+      automatic_setup = true,
       ensure_installed = { "python" },
     },
   },

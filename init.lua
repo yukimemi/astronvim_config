@@ -49,6 +49,26 @@ return {
     servers = {
       -- "pyright"
     },
+    config = {
+      lemminx = {
+        settings = {
+          xml = {
+            format = {
+              enabled = true,
+              formatComments = true,
+              joinCDATALines = false,
+              joinCommentLines = false,
+              joinContentLines = false,
+              spaceBeforeEmptyCloseTag = true,
+              splitAttributes = true,
+            },
+            completion = {
+              autoCloseTags = true,
+            },
+          },
+        },
+      },
+    },
   },
   -- Configure require("lazy").setup() options
   lazy = {
@@ -57,7 +77,11 @@ return {
       rtp = {
         -- customize default disabled vim plugins
         disabled_plugins = { "tohtml", "gzip", "matchit", "zipPlugin", "netrwPlugin", "tarPlugin" },
+        reset = not jit.os:find "Windows",
       },
+    },
+    dev = {
+      path = "~/src/github.com/yukimemi",
     },
   },
   -- This function is run last and is a good place to configuring

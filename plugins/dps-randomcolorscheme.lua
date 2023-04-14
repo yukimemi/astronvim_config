@@ -12,9 +12,9 @@ return {
     vim.g.randomcolorscheme_disables = { "evening", "default" }
     vim.g.randomcolorscheme_path = vim.fn.expand "~/.config/randomcolorscheme/colorscheme.toml"
     vim.g.randomcolorscheme_background = "dark"
-    vim.keymap.set("n", "<space>co", "<cmd>ChangeColorscheme<cr>")
-    vim.keymap.set("n", "<space>cn", "<cmd>DisableThisColorscheme<cr>")
-    vim.keymap.set("n", "<space>cl", "<cmd>LikeThisColorscheme<cr>")
-    vim.keymap.set("n", "<space>ch", "<cmd>HateThisColorscheme<cr>")
+    vim.keymap.set("n", "<space>ro", "<cmd>ChangeColorscheme<cr>")
+    vim.keymap.set("n", "<space>rn", "<cmd>DisableThisColorscheme<cr>")
+    vim.keymap.set("n", "<space>rl", "<cmd>LikeThisColorscheme<cr>")
+    vim.keymap.set("n", "<space>rh", "<cmd>HateThisColorscheme<cr>")
   end,
 }

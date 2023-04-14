@@ -36,7 +36,25 @@ return {
       function() require("telescope.builtin").find_files { cwd = "~/src" } end,
       desc = "Find src file",
     },
+    ["<leader>fm"] = {
+      function() require("telescope.builtin").find_files { cwd = "~/.memolist" } end,
+      desc = "Find memolist file",
+    },
     ["<leader>e"] = { "<cmd>Neotree reveal_force_cwd<cr>", desc = "Neotree reveal_force_cwd" },
+    -- Open current buffer dir.
+    ["<leader>O"] = {
+      function()
+        local bufname = vim.fn.bufname()
+        local bufdir = vim.fn.fnamemodify(bufname, ":p:h")
+        if jit.os:find "Windows" then
+          local bufdir_backslash = string.gsub(bufdir, "/", "\\")
+          vim.cmd("!explorer " .. bufdir_backslash)
+        else
+          vim.cmd("!open " .. bufdir)
+        end
+      end,
+      desc = "Open buffer dir",
+    },
   },
   t = {
     -- setting a mapping to false will disable it

@@ -22,25 +22,7 @@ return {
     ["<leader>b"] = { name = "Buffers" },
     -- quick save
     -- ["<C-s>"] = { ":w!<cr>", desc = "Save File" },  -- change description but the same command
-    ["gh"] = { "^", desc = "Goto line head" },
-    ["gl"] = { "$", desc = "Goto line end" },
-    ["s0"] = { "<cmd>only<cr>", desc = "only" },
-    ["so"] = { "<c-w>_<c-w>|", desc = "only (tmp)" },
-    ["<tab>"] = { "%", desc = "Jump pair bracket" },
-    -- Telescope
-    ["<leader>fD"] = {
-      function() require("telescope.builtin").git_files { cwd = "~/.dotfiles" } end,
-      desc = "Find dot file",
-    },
-    ["<leader>fs"] = {
-      function() require("telescope.builtin").find_files { cwd = "~/src" } end,
-      desc = "Find src file",
-    },
-    ["<leader>fm"] = {
-      function() require("telescope.builtin").find_files { cwd = "~/.memolist" } end,
-      desc = "Find memolist file",
-    },
-    ["<leader>e"] = { "<cmd>Neotree reveal_force_cwd<cr>", desc = "Neotree reveal_force_cwd" },
+    --
     -- Open current buffer dir.
     ["<leader>O"] = {
       function()

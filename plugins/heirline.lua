@@ -2,13 +2,18 @@ return {
   {
     "rebelot/heirline.nvim",
     opts = function(_, opts)
-      local status = require "astronvim.utils.status"
       vim.g.randomcolorscheme_priority = 0
-      table.insert(
-        opts.statusline,
-        9,
-        { provider = " " .. vim.g.colors_name .. ": " .. vim.g.randomcolorscheme_priority .. " " }
-      )
+      table.insert(opts.statusline, 9, {
+        provider = function()
+          if vim.g.colors_name == nil then
+            return " "
+          else
+            return " " .. vim.g.colors_name .. ": " .. vim.g.randomcolorscheme_priority .. " "
+          end
+        end,
+        hl = { fg = "fg", bg = "bg", bold = true },
+        update = { "ColorScheme" },
+      })
       return opts
     end,
   },

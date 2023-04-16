@@ -1,16 +1,16 @@
 return {
   -- Configure AstroNvim updates
   updater = {
-    remote = "origin", -- remote to use
-    channel = "stable", -- "stable" or "nightly"
-    version = "latest", -- "latest", tag name, or regex search like "v1.*" to only do updates before v2 (STABLE ONLY)
-    branch = "nightly", -- branch name (NIGHTLY ONLY)
-    commit = nil, -- commit hash (NIGHTLY ONLY)
-    pin_plugins = nil, -- nil, true, false (nil will pin plugins on stable only)
-    skip_prompts = false, -- skip prompts about breaking changes
+    remote = "origin",     -- remote to use
+    channel = "stable",    -- "stable" or "nightly"
+    version = "latest",    -- "latest", tag name, or regex search like "v1.*" to only do updates before v2 (STABLE ONLY)
+    branch = "nightly",    -- branch name (NIGHTLY ONLY)
+    commit = nil,          -- commit hash (NIGHTLY ONLY)
+    pin_plugins = nil,     -- nil, true, false (nil will pin plugins on stable only)
+    skip_prompts = false,  -- skip prompts about breaking changes
     show_changelog = true, -- show the changelog after performing an update
-    auto_quit = false, -- automatically quit the current session after a successful update
-    remotes = { -- easily add new remotes to track
+    auto_quit = false,     -- automatically quit the current session after a successful update
+    remotes = {            -- easily add new remotes to track
       --   ["remote_name"] = "https://remote_url.come/repo.git", -- full remote url
       --   ["remote2"] = "github_user/repo", -- GitHub user/repo shortcut,
       --   ["remote3"] = "github_user", -- GitHub user assume AstroNvim fork
@@ -28,7 +28,7 @@ return {
     formatting = {
       -- control auto formatting on save
       format_on_save = {
-        enabled = true, -- enable or disable format on save globally
+        enabled = true,     -- enable or disable format on save globally
         allow_filetypes = { -- enable format on save for specified filetypes only
           -- "go",
         },
@@ -49,7 +49,21 @@ return {
     servers = {
       -- "pyright"
     },
+    mappings = {
+      n = {
+        ["gl"] = { "$", desc = "Line end" },
+      },
+    },
     config = {
+      denols = function(opts)
+        opts.root_dir = require("lspconfig.util").root_pattern("deno.json", "deno.jsonc")
+        return opts
+      end,
+      vtsls = function(opts)
+        opts.root_dir = require("lspconfig.util").root_pattern "package.json"
+        opts.single_file_support = false
+        return opts
+      end,
       lemminx = {
         settings = {
           xml = {
@@ -100,6 +114,36 @@ return {
     --     ["~/%.config/foo/.*"] = "fooscript",
     --   },
     -- }
+    -- Remap for dealing with word wrap
+    vim.keymap.set("n", "k", "v:count == 0 ? 'gk' : 'k'", { expr = true, silent = true })
+    vim.keymap.set("n", "j", "v:count == 0 ? 'gj' : 'j'", { expr = true, silent = true })
+    vim.keymap.set("n", "<tab>", "%", { silent = true })
+
+    vim.keymap.set({ "n", "x" }, "gh", "^", { silent = true })
+    vim.keymap.set({ "n", "x" }, "gl", "$", { silent = true })
+
+    -- `s` prefix mappings
+    vim.keymap.set("n", "s", "<Nop>", { silent = true })
+    vim.keymap.set("n", "s0", "<cmd>only<cr>", { silent = true })
+    vim.keymap.set("n", "s=", "<c-w>=", { silent = true })
+    vim.keymap.set("n", "sH", "<c-w>H", { silent = true })
+    vim.keymap.set("n", "sJ", "<c-w>J", { silent = true })
+    vim.keymap.set("n", "sK", "<c-w>K", { silent = true })
+    vim.keymap.set("n", "sL", "<c-w>L", { silent = true })
+    vim.keymap.set("n", "sO", "<cmd>tabonly<cr>", { silent = true })
+    vim.keymap.set("n", "sQ", "<cmd>qa<cr>", { silent = true })
+    vim.keymap.set("n", "sbk", "<cmd>bd!<cr>", { silent = true })
+    vim.keymap.set("n", "sbq", "<cmd>q!<cr>", { silent = true })
+    vim.keymap.set("n", "sn", "<cmd>bn<cr>", { silent = true })
+    vim.keymap.set("n", "so", "<c-w>_<c-w>|", { silent = true })
+    vim.keymap.set("n", "sp", "<cmd>bp<cr>", { silent = true })
+    vim.keymap.set("n", "sq", "<cmd>q<cr>", { silent = true })
+    vim.keymap.set("n", "sr", "<c-w>r", { silent = true })
+    vim.keymap.set("n", "sh", "<cmd>sp<cr>", { silent = true })
+    vim.keymap.set("n", "st", "<cmd>tabnew<cr>", { silent = true })
+    vim.keymap.set("n", "sv", "<cmd>vs<cr>", { silent = true })
+    vim.keymap.set("n", "sw", "<c-w>w", { silent = true })
+
     vim.api.nvim_create_augroup("MyAutoCmd", { clear = true })
     vim.api.nvim_create_autocmd("UIEnter", {
       group = "MyAutoCmd",
@@ -118,5 +162,8 @@ return {
         vim.keymap.set({ "x", "s" }, "<RightMouse>", "<cmd>call GuiShowContextMenu()<CR>gv")
       end,
     })
+
+    -- gin.vim
+    require("user.plugins.gin").polish()
   end,
 }

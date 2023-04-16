@@ -26,7 +26,7 @@ return {
             "TextChanged",
           },
           set = true,
-          wait = 300,
+          wait = 0,
         },
         {
           name = { "CursorMoved", "CursorMovedI", "InsertEnter" },
@@ -53,7 +53,7 @@ return {
             "TextChanged",
           },
           set = true,
-          wait = 500,
+          wait = 50,
         },
         {
           name = { "CursorMoved", "CursorMovedI", "InsertEnter" },

@@ -55,6 +55,7 @@ return {
     "Shougo/ddu-filter-matcher_ignore_files",
     "matsui54/ddu-source-file_external",
     "matsui54/ddu-source-help",
+    "matsui54/ddu-source-command_history",
     "shun/ddu-source-buffer",
     {
       "shun/ddu-source-rg",
@@ -312,6 +313,9 @@ return {
         },
         action = {
           defaultAction = "do",
+        },
+        ui_select = {
+          defaultAction = "select",
         },
         readme_viewer = {
           defaultAction = "open",

@@ -1,14 +1,10 @@
 return {
   "yukimemi/dps-hitori",
-
   dev = false,
-
   lazy = false,
-
   dependencies = {
     "vim-denops/denops.vim",
   },
-
   init = function()
     vim.g.hitori_debug = false
     vim.g.hitori_enable = true

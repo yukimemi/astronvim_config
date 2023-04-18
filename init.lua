@@ -97,6 +97,7 @@ return {
   -- Configure require("lazy").setup() options
   lazy = {
     defaults = { lazy = true },
+    concurrency = 20,
     performance = {
       rtp = {
         -- customize default disabled vim plugins

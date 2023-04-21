@@ -37,6 +37,14 @@ return {
       end,
       desc = "Open buffer dir",
     },
+    ["ued"] = {
+      function() vim.cmd [[e! ++ff=dos]] end,
+      desc = "ff to dos",
+    },
+    ["ueu"] = {
+      function() vim.cmd [[e! ++ff=unix]] end,
+      desc = "ff to unix",
+    },
   },
   t = {
     -- setting a mapping to false will disable it

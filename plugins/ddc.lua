@@ -19,7 +19,7 @@ return {
       "Shougo/pum.vim",
       config = function()
         vim.fn["pum#set_option"]("use_complete", false)
-        vim.fn["pum#set_option"]("horizontal_menu", false)
+        -- vim.fn["pum#set_option"]("horizontal_menu", false)
         vim.fn["pum#set_option"]("min_width", 3)
         vim.fn["pum#set_option"]("max_width", 100)
         vim.fn["pum#set_option"]("max_height", 30)
@@ -29,8 +29,10 @@ return {
         vim.fn["pum#set_option"]("padding", true)
       end,
     },
-    "Shougo/ddc-ui-pum",
     "Shougo/ddc-ui-inline",
+    "Shougo/ddc-ui-native",
+    "Shougo/ddc-ui-none",
+    "Shougo/ddc-ui-pum",
 
     -- snippet
     "hrsh7th/vim-vsnip",

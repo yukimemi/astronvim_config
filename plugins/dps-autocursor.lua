@@ -8,6 +8,7 @@ return {
   },
   init = function()
     vim.g.autocursor_debug = false
+    -- vim.g.autocursor_throttle = 3000
     vim.g.autocursor_cursorline = {
       enable = true,
       events = {
@@ -26,7 +27,7 @@ return {
             "TextChanged",
           },
           set = true,
-          wait = 1500,
+          wait = 1000,
         },
         {
           name = { "CursorMoved", "CursorMovedI", "InsertEnter" },
@@ -53,7 +54,7 @@ return {
             "TextChanged",
           },
           set = true,
-          wait = 1800,
+          wait = 1200,
         },
         {
           name = { "CursorMoved", "CursorMovedI", "InsertEnter" },

@@ -37,11 +37,11 @@ return {
       end,
       desc = "Open buffer dir",
     },
-    ["ued"] = {
+    ["<leader>ued"] = {
       function() vim.cmd [[e! ++ff=dos]] end,
       desc = "ff to dos",
     },
-    ["ueu"] = {
+    ["<leader>ueu"] = {
       function() vim.cmd [[e! ++ff=unix]] end,
       desc = "ff to unix",
     },

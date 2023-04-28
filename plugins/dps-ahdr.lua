@@ -6,7 +6,7 @@ return {
   },
   init = function()
     vim.g.ahdr_debug = false
-    vim.g.ahdr_cfg_path = vim.fn.expand "~/.config/nvim/ahdr.toml"
+    vim.g.ahdr_cfg_path = vim.fn.expand "~/.config/ahdr/ahdr.toml"
 
     vim.api.nvim_create_user_command("DenopsAhdrDebug", function()
       vim.api.nvim_create_autocmd("BufWritePost", {

@@ -6,7 +6,7 @@ return {
   },
   init = function()
     vim.g.asyngrep_debug = false
-    vim.g.asyngrep_cfg_path = vim.fn.expand("~/.config/nvim/asyngrep.toml")
+    vim.g.asyngrep_cfg_path = vim.fn.expand "~/.config/asyngrep/asyngrep.toml"
 
     vim.opt.grepformat = "%f:%l:%c:%m"
 

@@ -50,7 +50,7 @@ return {
     "Shougo/ddc-source-nvim-lua",
     {
       "Milly/windows-clipboard-history.vim",
-      enabled = jit.os:find "Windows",
+      enabled = vim.fn.has "win32" > 0,
     },
     {
       "Shougo/ddc-source-mocword",

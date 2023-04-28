@@ -17,5 +17,13 @@ return {
     vim.keymap.set("n", "<space>rd", "<cmd>DisableThisColorscheme<cr>")
     vim.keymap.set("n", "<space>rl", "<cmd>LikeThisColorscheme<cr>")
     vim.keymap.set("n", "<space>rh", "<cmd>HateThisColorscheme<cr>")
+
+    if vim.g.neovide then
+      vim.api.nvim_create_autocmd("Colorscheme", {
+        group = vim.api.nvim_create_augroup("MyRandomColorscheme", { clear = true }),
+        pattern = "*",
+        callback = function() vim.cmd [[syntax enable]] end,
+      })
+    end
   end,
 }

@@ -91,7 +91,7 @@ return {
     },
     {
       "matsui54/denops-signature_help",
-      enabled = false,
+      enabled = true,
       config = function() vim.fn["signature_help#enable"]() end,
     },
   },

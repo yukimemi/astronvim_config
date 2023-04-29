@@ -1,13 +1,12 @@
 local M = {
   "gbprod/yanky.nvim",
+  enabled = false,
 
   event = "VeryLazy",
 
   dependencies = {
     "kkharji/sqlite.lua",
-    enabled = function()
-      return not jit.os:find("Windows")
-    end,
+    enabled = function() return not jit.os:find "Windows" end,
   },
 }
 
@@ -18,28 +17,31 @@ local M = {
 ---@param is_visual boolean
 ---@param linewise YankyChange
 function M.put(type, is_visual, linewise)
-  local yanky_wrappers = require("yanky.wrappers")
-  local yanky = require("yanky")
+  local yanky_wrappers = require "yanky.wrappers"
+  local yanky = require "yanky"
   local callback = linewise == true and yanky_wrappers.linewise()
-    or type(linewise) == "string" and yanky_wrappers.linewise(yanky_wrappers.change(linewise))
+      or type(linewise) == "string" and yanky_wrappers.linewise(yanky_wrappers.change(linewise))
   yanky.put(type, is_visual, callback)
 end
 
 function M.init()
-  vim.keymap.set("n", "<leader>P", function()
-    require("telescope").extensions.yank_history.yank_history()
-  end, { desc = "Paste from Yanky" })
+  vim.keymap.set(
+    "n",
+    "<leader>P",
+    function() require("telescope").extensions.yank_history.yank_history() end,
+    { desc = "Paste from Yanky" }
+  )
 end
 
 function M.config()
-  require("yanky").setup({
+  require("yanky").setup {
     highlight = {
       timer = 150,
     },
     ring = {
-      storage = jit.os:find("Windows") and "shada" or "sqlite",
+      storage = jit.os:find "Windows" and "shada" or "sqlite",
     },
-  })
+  }
 
   vim.keymap.set({ "n", "x" }, "y", "<Plug>(YankyYank)")
 
@@ -63,7 +65,6 @@ function M.config()
   --
   -- vim.keymap.set("n", "=p", "<Plug>(YankyPutAfterFilter)")
   -- vim.keymap.set("n", "=P", "<Plug>(YankyPutBeforeFilter)")
-
 end
 
 return M

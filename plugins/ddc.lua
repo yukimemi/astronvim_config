@@ -18,15 +18,15 @@ return {
     {
       "Shougo/pum.vim",
       config = function()
-        vim.fn["pum#set_option"]("use_complete", false)
-        -- vim.fn["pum#set_option"]("horizontal_menu", false)
-        vim.fn["pum#set_option"]("min_width", 3)
-        vim.fn["pum#set_option"]("max_width", 100)
-        vim.fn["pum#set_option"]("max_height", 30)
-        vim.fn["pum#set_option"]("use_setline", false)
         -- vim.fn["pum#set_option"]("border", "single")
+        -- vim.fn["pum#set_option"]("horizontal_menu", false)
+        vim.fn["pum#set_option"]("max_height", 30)
+        vim.fn["pum#set_option"]("max_width", 100)
+        vim.fn["pum#set_option"]("min_width", 3)
+        vim.fn["pum#set_option"]("padding", false)
         vim.fn["pum#set_option"]("scrollbar_char", "")
-        vim.fn["pum#set_option"]("padding", true)
+        vim.fn["pum#set_option"]("use_complete", false)
+        vim.fn["pum#set_option"]("use_setline", false)
       end,
     },
     "Shougo/ddc-ui-inline",

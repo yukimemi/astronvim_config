@@ -72,7 +72,7 @@ return {
     "tennashi/ddu-source-github",
     "tennashi/ddu-source-git_ref",
   },
-  init = function()
+  polish = function()
     vim.keymap.set("n", "<space>do", "<cmd>Ddu file_old<cr>")
     vim.keymap.set("n", "<space>du", "<cmd>Ddu mr<cr>")
     vim.keymap.set("n", "<space>dw", "<cmd>Ddu mr -source-param-kind='mrw'<cr>")

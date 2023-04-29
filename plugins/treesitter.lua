@@ -19,10 +19,6 @@ return {
     })
     opts.highlight = {
       enable = true,
-      disable = function(lang)
-        local ok = pcall(function() vim.treesitter.get_query(lang, "highlights") end)
-        return not ok
-      end,
     }
     return opts
   end,

@@ -1,6 +1,7 @@
 return {
   "yukimemi/dps-hitori",
   dev = false,
+  enabled = not vim.fn.has "wsl",
   lazy = false,
   dependencies = {
     "vim-denops/denops.vim",

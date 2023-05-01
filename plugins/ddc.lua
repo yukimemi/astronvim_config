@@ -76,7 +76,6 @@ return {
       "hokorobi/ddc-source-plantuml",
       init = function() vim.g.ddc_source_plantuml_cmd = vim.fn.expand "~/.local/bin/plantuml.jar" end,
     },
-
     -- popup, signature
     {
       "matsui54/denops-popup-preview.vim",
@@ -91,196 +90,167 @@ return {
     },
     {
       "matsui54/denops-signature_help",
-      enabled = true,
+      enabled = false,
       config = function() vim.fn["signature_help#enable"]() end,
     },
   },
-  init = function()
-    vim.cmd [[
-      function! CommandlinePre(mode) abort
-        " Overwrite sources
-        if !('b:prev_buffer_config'->exists())
-          let b:prev_buffer_config = ddc#custom#get_buffer()
-        endif
-        if a:mode ==# ':'
-          call ddc#custom#patch_buffer('keywordPattern', '[0-9a-zA-Z_:#-]*')
-        endif
-
-        autocmd MyAutoCmd User DDCCmdlineLeave ++once call CommandlinePost()
-        autocmd MyAutoCmd InsertEnter <buffer> ++once call CommandlinePost()
-
-        call ddc#enable_cmdline_completion()
-      endfunction
-      function! CommandlinePost() abort
-        " Restore sources
-        if 'b:prev_buffer_config'->exists()
-          call ddc#custom#set_buffer(b:prev_buffer_config)
-          unlet b:prev_buffer_config
+  cmdline_pre = function(mode)
+    vim.b.prev_buffer_config = vim.fn["ddc#custom#get_buffer"]()
+    if mode == ":" then vim.fn["ddc#custom#patch_buffer"]("keywordPattern", "[0-9a-zA-Z_:#-]*") end
+    vim.api.nvim_create_autocmd("User DDCCmdlineLeave", {
+      group = vim.api.nvim_create_augroup("MyDdcAutocmd:cmdline_pre", { clear = true }),
+      once = true,
+      callback = require("user.plugins.ddc").cmdline_post,
+    })
+  end,
+  cmdline_post = function()
+    if vim.b.prev_buffer_config ~= nil then
+      vim.fn["ddc#custom#set_buffer"](vim.b.prev_buffer_config)
+    else
+      vim.fn["ddc#custom#set_buffer"]()
+    end
+  end,
+  patch_global = {
+    ui = "pum",
+    autoCompleteEvents = {
+      "InsertEnter",
+      "TextChangedI",
+      "TextChangedP",
+      "CmdlineEnter",
+      "CmdlineChanged",
+      "TextChangedT",
+    },
+    sources = {
+      "nvim-lsp",
+      "around",
+      "vsnip",
+      "file",
+      "rg",
+      "mocword",
+    },
+    cmdlineSources = {
+      [":"] = { "cmdline", "cmdline-history", "around" },
+      ["@"] = { "cmdline-history", "input", "file", "around" },
+      [">"] = { "cmdline-history", "input", "file", "around" },
+      ["/"] = { "around", "line" },
+      ["?"] = { "around", "line" },
+      ["-"] = { "around", "line" },
+      ["="] = { "input" },
+    },
+    sourceOptions = {
+      ["_"] = {
+        ignoreCase = true,
+        matchers = { "matcher_head", "matcher_length" },
+        sorters = { "sorter_rank" },
+        converters = { "converter_remove_overlap", "converter_truncate_abbr" },
+      },
+      around = {
+        mark = "around",
+      },
+      buffer = { mark = "buffer" },
+      plantuml = { mark = "uml" },
+      cmdline = {
+        mark = "cmdline",
+        forceCompletionPattern = "S/S*|.w*",
+        dup = "force",
+      },
+      input = {
+        mark = "input",
+        forceCompletionPattern = "S/S*",
+        isVolatile = true,
+        dup = "force",
+      },
+      line = {
+        mark = "line",
+        matchers = { "matcher_vimregexp" },
+      },
+      mocword = {
+        mark = "word",
+        minAutoCompleteLength = 3,
+        isVolatile = true,
+      },
+      ["nvim-lsp"] = {
+        mark = "lsp",
+        forceCompletionPattern = ".w*|=w*|->w*",
+        dup = "force",
+      },
+      file = {
+        mark = "file",
+        isVolatile = true,
+        minAutoCompleteLength = 3,
+        forceCompletionPattern = "S/S*",
+      },
+      ["cmdline-history"] = { mark = "cmdhist", sorters = {} },
+      rg = {
+        mark = "rg",
+        minAutoCompleteLength = 3,
+        enabledIf = "finddir('.git', ';') != ''",
+      },
+      ["windows-clipboard-history"] = {
+        mark = "clip",
+      },
+    },
+    sourceParams = {
+      buffer = {
+        requireSameFiletype = false,
+        limitBytes = 50000,
+        fromAltBuf = true,
+        forceCollect = true,
+      },
+      file = {
+        filenameChars = "[:keyword:].",
+      },
+    },
+  },
+  patch_filetype = {
+    plantuml = {
+      sources = { "plantuml", "nvim-lsp", "around", "vsnip", "file", "rg", "mocword" },
+    },
+    ["ddu-ff-filter"] = {
+      keywordPattern = "[0-9a-zA-Z_:#-]*",
+      sources = { "line", "buffer" },
+      specialBufferCompletion = true,
+    },
+    FineCmdlinePrompt = {
+      keywordPattern = "[0-9a-zA-Z_:#-]*",
+      sources = { "cmdline-history", "around" },
+      specialBufferCompletion = true,
+    },
+  },
+  polish = function()
+    -- normal mode completion.
+    vim.keymap.set({ "n", "x" }, ":", "<cmd>lua require('user.plugins.ddc').cmdline_pre(':')<cr>:")
+    vim.keymap.set("n", "/", "<cmd>lua require('user.plugins.ddc').cmdline_pre('/')<cr>/")
+    vim.keymap.set("n", "?", "<cmd>lua require('user.plugins.ddc').cmdline_pre('?')<cr>?")
+    -- insert mode completion.
+    vim.keymap.set("i", "<c-n>", function() vim.fn["pum#map#insert_relative"](1) end)
+    vim.keymap.set("i", "<c-p>", function() vim.fn["pum#map#insert_relative"](-1) end)
+    vim.keymap.set("i", "<c-k>", function() vim.fn["pum#map#extend"](vim.fn["pum#map#confirm"]) end, { expr = true })
+    vim.keymap.set("i", "<c-space>", function() vim.fn["ddc#map#manual_complete"]() end)
+    -- command line mode completion.
+    vim.keymap.set("c", "<tab>", function()
+      if vim.fn.wildmenumode() then
+        vim.fn.nr2char(vim.o.wildcharm)
+      else
+        if vim.fn["pum#visible"]() then
+          vim.fn["pum#map#insert_relative"](1)
         else
-          call ddc#custom#set_buffer({})
-        endif
-      endfunction
-    ]]
-
-    vim.keymap.set("n", ":", "<Cmd>call CommandlinePre(':')<CR>:")
-    vim.keymap.set("n", "/", "<Cmd>call CommandlinePre('/')<CR>/")
-    vim.keymap.set("n", "?", "<Cmd>call CommandlinePre('/')<CR>?")
+          vim.fn["ddc#map#manual_complete"]()
+        end
+      end
+    end)
+    vim.keymap.set("c", "<s-tab>", function() vim.fn["pum#map#insert_relative"](-1) end)
   end,
   config = function()
-    vim.cmd [[
-      if has('win32')
-        call ddc#custom#patch_global('sources',
-            \ ['nvim-lsp', 'around', 'vsnip', 'file', 'rg', 'mocword', 'windows-clipboard-history'],
-            \ )
-      else
-        call ddc#custom#patch_global('sources',
-            \ ['nvim-lsp', 'around', 'vsnip', 'file', 'rg', 'mocword'],
-            \ )
-      endif
-      call ddc#custom#patch_global('cmdlineSources', {
-          \   ':': ['cmdline', 'cmdline-history', 'around'],
-          \   '@': ['cmdline-history', 'input', 'file', 'around'],
-          \   '>': ['cmdline-history', 'input', 'file', 'around'],
-          \   '/': ['around', 'line'],
-          \   '?': ['around', 'line'],
-          \   '-': ['around', 'line'],
-          \   '=': ['input'],
-          \ })
-
-      call ddc#custom#patch_global('sourceOptions', #{
-          \   _: #{
-          \     ignoreCase: v:true,
-          \     matchers: ['matcher_head', 'matcher_length'],
-          \     sorters: ['sorter_rank'],
-          \     converters: [
-          \       'converter_remove_overlap', 'converter_truncate_abbr',
-          \     ],
-          \   },
-          \   around: #{ mark: '' },
-          \   buffer: #{ mark: '' },
-          \   plantuml: #{ mark: '' },
-          \   cmdline: #{
-          \     mark: '',
-          \     forceCompletionPattern: '\S/\S*|\.\w*',
-          \     dup: 'force',
-          \   },
-          \   input: #{
-          \     mark: 'input',
-          \     forceCompletionPattern: '\S/\S*',
-          \     isVolatile: v:true,
-          \     dup: 'force',
-          \   },
-          \   line: #{
-          \     mark: 'line',
-          \     matchers: ['matcher_vimregexp'],
-          \   },
-          \   mocword: #{
-          \     mark: '',
-          \     minAutoCompleteLength: 3,
-          \     isVolatile: v:true,
-          \   },
-          \   nvim-lsp: #{
-          \     mark: '',
-          \     forceCompletionPattern: '\.\w*|:\w*|->\w*',
-          \     dup: 'force',
-          \   },
-          \   file: #{
-          \     mark: '',
-          \     isVolatile: v:true,
-          \     minAutoCompleteLength: 3,
-          \     forceCompletionPattern: '\S/\S*',
-          \   },
-          \   cmdline-history: #{
-          \     mark: '',
-          \     sorters: [],
-          \   },
-          \   rg: #{
-          \     mark: '',
-          \     minAutoCompleteLength: 3,
-          \     enabledIf: "finddir('.git', ';') != ''",
-          \   },
-          \   windows-clipboard-history: #{
-          \     mark: 'clip',
-          \   },
-          \ })
-
-      call ddc#custom#patch_global('sourceParams', #{
-          \   buffer: #{
-          \     requireSameFiletype: v:false,
-          \     limitBytes: 50000,
-          \     fromAltBuf: v:true,
-          \     forceCollect: v:true,
-          \   },
-          \   file: #{
-          \     filenameChars: '[:keyword:].',
-          \   },
-          \   windows-clipboard-history: #{
-          \     maxAbbrWidth: 100,
-          \   },
-          \ })
-
-      call ddc#custom#patch_filetype(['plantuml'], #{
-          \   sources: ['plantuml', 'nvim-lsp', 'around', 'vsnip', 'file', 'rg', 'mocword'],
-          \ })
-
-      call ddc#custom#patch_filetype(['ddu-ff-filter'], #{
-          \   keywordPattern: '[0-9a-zA-Z_:#-]*',
-          \   sources: ['line', 'buffer'],
-          \   specialBufferCompletion: v:true,
-          \ })
-
-      call ddc#custom#patch_filetype(['FineCmdlinePrompt'], #{
-          \   keywordPattern: '[0-9a-zA-Z_:#-]*',
-          \   sources: ['cmdline-history', 'around'],
-          \   specialBufferCompletion: v:true,
-          \ })
-
-      " Use pum.vim
-      call ddc#custom#patch_global('autoCompleteEvents', [
-          \ 'InsertEnter', 'TextChangedI', 'TextChangedP',
-          \ 'CmdlineEnter', 'CmdlineChanged', 'TextChangedT',
-          \ ])
-      call ddc#custom#patch_global('ui', 'pum')
-
-      " For insert mode completion
-      " inoremap <expr> <TAB>
-      "       \ pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
-      "       \ (col('.') <= 1 <Bar><Bar> getline('.')[col('.') - 2] =~# '\s') ?
-      "       \ '<TAB>' : ddc#map#manual_complete()
-      " inoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
-      inoremap <C-n>   <Cmd>call pum#map#insert_relative(+1)<CR>
-      inoremap <C-p>   <Cmd>call pum#map#insert_relative(-1)<CR>
-      inoremap <C-o>   <Cmd>call pum#map#confirm()<CR>
-      inoremap <expr> <C-k>   ddc#map#extend(pum#map#confirm())
-      inoremap <C-x><C-f> <Cmd>call ddc#map#manual_complete(#{ sources: ['file'] })<CR>
-      inoremap <expr> l
-            \ pum#entered() ?
-            \ '<Cmd>call pum#map#insert_relative(+1)<CR>' : 'l'
-      inoremap <expr> h
-            \ pum#entered() ?
-            \ '<Cmd>call pum#map#insert_relative(-1)<CR>' : 'h'
-      inoremap <expr> <C-c>
-            \ ddc#map#insert_item(0, '<Cmd>call pum#map#cancel()<CR>')
-
-      " For command line mode completion
-      cnoremap <expr> <Tab>
-      \ wildmenumode() ? &wildcharm->nr2char() :
-      \ pum#visible() ? '<Cmd>call pum#map#insert_relative(+1)<CR>' :
-      \ ddc#map#manual_complete()
-      cnoremap <S-Tab> <Cmd>call pum#map#insert_relative(-1)<CR>
-      cnoremap <C-o>   <Cmd>call pum#map#confirm()<CR>
-      cnoremap <expr> <C-e>
-            \ ddc#map#insert_item(0, '<Cmd>call pum#map#cancel()<CR>')
-
-      " For terminal completion
-      call ddc#enable_terminal_completion()
-      call ddc#custom#patch_filetype(['deol'], #{
-          \   specialBufferCompletion: v:true,
-          \   keywordPattern: '[0-9a-zA-Z_./#:-]*',
-          \   sources: ['zsh', 'shell-history', 'around'],
-          \ })
-
-      call ddc#enable()
-    ]]
+    local patch_global = require("user.plugins.ddc").patch_global
+    if vim.fn.has "win32" > 0 then
+      table.insert(patch_global.sources, "windows-clipboard-history")
+      patch_global.sourceParams["windows-clipboard-history"] = { maxAbbrWidth = 100 }
+    end
+    vim.fn["ddc#custom#patch_global"](patch_global)
+    for k, v in pairs(require("user.plugins.ddc").patch_filetype) do
+      vim.fn["ddc#custom#patch_filetype"](k, v)
+    end
+    vim.fn["ddc#enable"]()
   end,
 }

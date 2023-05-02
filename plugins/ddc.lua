@@ -4,6 +4,7 @@ return {
   lazy = false,
   dependencies = {
     "vim-denops/denops.vim",
+    "tani/vim-artemis",
 
     -- matcher, sorter, converter
     "tani/ddc-fuzzy",
@@ -95,7 +96,10 @@ return {
     },
   },
   cmdline_pre = function(mode)
-    if vim.fn.exists(vim.b.prev_buffer_config) then vim.b.prev_buffer_config = vim.fn["ddc#custom#get_buffer"]() end
+    if vim.fn.exists "b:prev_buffer_config" then
+      local vimx = require "artemis"
+      vimx.b.prev_buffer_config = vim.fn["ddc#custom#get_buffer"]()
+    end
     if mode == ":" then vim.fn["ddc#custom#patch_buffer"]("keywordPattern", "[0-9a-zA-Z_:#-]*") end
     vim.api.nvim_create_autocmd("User", {
       pattern = "DDCCmdlineLeave",
@@ -104,8 +108,9 @@ return {
     })
   end,
   cmdline_post = function()
-    if vim.fn.exists(vim.b.prev_buffer_config) then
-      vim.fn["ddc#custom#set_buffer"](vim.b.prev_buffer_config)
+    if vim.fn.exists "b:prev_buffer_config" then
+      local vimx = require "artemis"
+      vim.fn["ddc#custom#set_buffer"](vimx.b.prev_buffer_config)
     else
       vim.fn["ddc#custom#set_buffer"]()
     end

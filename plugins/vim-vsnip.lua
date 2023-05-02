@@ -6,7 +6,7 @@ return {
     "rafamadriz/friendly-snippets",
   },
 
-  config = function()
+  polish = function()
     vim.cmd [[
     " Expand or jump
     imap <expr> <C-k>   vsnip#available(1)  ? '<Plug>(vsnip-expand-or-jump)' : '<C-k>'

@@ -210,5 +210,6 @@ return {
     require("user.plugins.ddc").polish()
     require("user.plugins.ddu").polish()
     require("user.plugins.noice").polish()
+    require("user.plugins.vim-vsnip").polish()
   end,
 }

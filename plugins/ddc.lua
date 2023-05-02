@@ -95,16 +95,16 @@ return {
     },
   },
   cmdline_pre = function(mode)
-    vim.b.prev_buffer_config = vim.fn["ddc#custom#get_buffer"]()
+    if vim.fn.exists(vim.b.prev_buffer_config) then vim.b.prev_buffer_config = vim.fn["ddc#custom#get_buffer"]() end
     if mode == ":" then vim.fn["ddc#custom#patch_buffer"]("keywordPattern", "[0-9a-zA-Z_:#-]*") end
-    vim.api.nvim_create_autocmd("User DDCCmdlineLeave", {
-      group = vim.api.nvim_create_augroup("MyDdcAutocmd:cmdline_pre", { clear = true }),
+    vim.api.nvim_create_autocmd("User", {
+      pattern = "DDCCmdlineLeave",
       once = true,
       callback = require("user.plugins.ddc").cmdline_post,
     })
   end,
   cmdline_post = function()
-    if vim.b.prev_buffer_config ~= nil then
+    if vim.fn.exists(vim.b.prev_buffer_config) then
       vim.fn["ddc#custom#set_buffer"](vim.b.prev_buffer_config)
     else
       vim.fn["ddc#custom#set_buffer"]()
@@ -229,7 +229,7 @@ return {
     vim.keymap.set("i", "<c-space>", function() vim.fn["ddc#map#manual_complete"]() end)
     -- command line mode completion.
     vim.keymap.set("c", "<tab>", function()
-      if vim.fn.wildmenumode() then
+      if vim.fn.wildmenumode() > 0 then
         vim.fn.nr2char(vim.o.wildcharm)
       else
         if vim.fn["pum#visible"]() then

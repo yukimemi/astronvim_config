@@ -194,7 +194,7 @@ return {
     end
 
     -- wsl.
-    if vim.fn.has "wsl" then
+    if vim.fn.has "wsl" > 0 then
       vim.g.clipboard = {
         name = "WslClipboard",
         copy = {

@@ -198,12 +198,12 @@ return {
       vim.g.clipboard = {
         name = "WslClipboard",
         copy = {
-          ["+"] = "clip.exe",
-          ["*"] = "clip.exe",
+          ["+"] = "win32yank.exe -i",
+          ["*"] = "win32yank.exe -i",
         },
         ["paste"] = {
-          ["+"] = 'powershell.exe -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
-          ["*"] = 'powershell.exe -NoProfile -c [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))',
+          ["+"] = 'powershell.exe -NoProfile -c & {chcp 65001 | Out-Null; [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8"); [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))}',
+          ["*"] = 'powershell.exe -NoProfile -c & {chcp 65001 | Out-Null; [Console]::OutputEncoding = [System.Text.Encoding]::GetEncoding("utf-8"); [Console]::Out.Write($(Get-Clipboard -Raw).tostring().replace("`r", ""))}',
         },
         ["cache_enabled"] = 0,
       }

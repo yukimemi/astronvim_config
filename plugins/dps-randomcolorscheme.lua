@@ -18,7 +18,7 @@ return {
     vim.keymap.set("n", "<space>rl", "<cmd>LikeThisColorscheme<cr>")
     vim.keymap.set("n", "<space>rh", "<cmd>HateThisColorscheme<cr>")
 
-    if vim.fn.has("win32") > 0 then
+    if vim.fn.has "win32" > 0 then
       vim.api.nvim_create_autocmd("Colorscheme", {
         group = vim.api.nvim_create_augroup("MyRandomColorscheme", { clear = true }),
         pattern = "*",
